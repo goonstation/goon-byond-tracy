@@ -1,0 +1,25 @@
+name: Build and Upload DLL
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Visual Studio
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    - name: Build DLL
+      run: cl.exe /nologo /std:c11 /O2 /LD /DNDEBUG prof.c ws2_32.lib /Fe:prof.dll
+
+    - name: Upload prof.dll
+      uses: actions/upload-artifact@v4
+      with:
+        name: prof-dll
+        path: prof.dll
