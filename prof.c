@@ -1625,6 +1625,7 @@ long long unix_timestamp(void) {
 #define UTRACY_PROTOCOL_0_8_2 (57)
 #define UTRACY_PROTOCOL_0_9_0 (63)
 #define UTRACY_PROTOCOL_0_10_0 (64)
+#define UTRACY_PROTOCOL_0_11_0 (66)
 
 #define UTRACY_EVT_ZONEBEGIN (15)
 #define UTRACY_EVT_ZONEEND (17)
@@ -1897,6 +1898,31 @@ int utracy_protocol_init(int unsigned version) {
 			utracy.protocol.query_thread_string = 2;
 			utracy.protocol.query_source_location = 3;
 			utracy.protocol.query_disconnect = 8;
+			utracy.protocol.query_symbol_code = 12;
+			utracy.protocol.query_source_code = 13;
+			utracy.protocol.query_data_transfer = 14;
+			utracy.protocol.query_data_transfer_part = 15;
+			break;
+
+		case UTRACY_PROTOCOL_0_11_0:
+			utracy.protocol.zone_begin = 15;
+			utracy.protocol.zone_end = 17;
+			utracy.protocol.zone_color = 65;
+			utracy.protocol.thread_context = 59;
+			utracy.protocol.framemark = 67;
+
+			utracy.protocol.response_source_location = 71;
+			utracy.protocol.response_server_query_noop = 92;
+			utracy.protocol.response_source_code_unavail = 93;
+			utracy.protocol.response_symbol_code_unavail = 94;
+			utracy.protocol.response_string_data = 99;
+			utracy.protocol.response_thread_name = 100;
+
+			utracy.protocol.query_terminate = 0;
+			utracy.protocol.query_string = 1;
+			utracy.protocol.query_thread_string = 2;
+			utracy.protocol.query_source_location = 3;
+			utracy.protocol.query_disconnect = 9;
 			utracy.protocol.query_symbol_code = 12;
 			utracy.protocol.query_source_code = 13;
 			utracy.protocol.query_data_transfer = 14;
@@ -2284,7 +2310,8 @@ int utracy_write_source_code(int unsigned id) {
 			break;
 
 		case UTRACY_PROTOCOL_0_9_0:
-		case UTRACY_PROTOCOL_0_10_0:;
+		case UTRACY_PROTOCOL_0_10_0:
+		case UTRACY_PROTOCOL_0_11_0:;
 			struct network_response_source_code msg = {
 				.type = utracy.protocol.response_source_code_unavail,
 				.id = id
@@ -2822,7 +2849,7 @@ void *hook(char *const restrict dst, char *const restrict src, char unsigned siz
 }
 
 #if defined(UTRACY_WINDOWS)
-#	define BYOND_MAX_BUILD 1641
+#	define BYOND_MAX_BUILD 1642
 #	define BYOND_MIN_BUILD 1543
 #	define BYOND_VERSION_ADJUSTED(a) ((a) - BYOND_MIN_BUILD)
 
@@ -2921,11 +2948,15 @@ static int unsigned const byond_offsets[][9] = {
 	[BYOND_VERSION_ADJUSTED(1635)] = {0x00408574, 0x00408578, 0x00408584, 0x00408594, 0x001C002C, 0x0012FE00, 0x0020AAD0, 0x001C2BD0, 0x00050606},
 	[BYOND_VERSION_ADJUSTED(1636)] = {0x0040860C, 0x00408610, 0x0040861C, 0x0040862C, 0x001C002C, 0x0012FFE0, 0x0020AEE0, 0x001C2F60, 0x00050606},
 	[BYOND_VERSION_ADJUSTED(1637)] = {0x0040860C, 0x00408610, 0x0040861C, 0x0040862C, 0x001C002C, 0x00130290, 0x0020B290, 0x001C3270, 0x00050606},
+  [BYOND_VERSION_ADJUSTED(1638)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050606},
+  [BYOND_VERSION_ADJUSTED(1639)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050606},
+  [BYOND_VERSION_ADJUSTED(1640)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050606},
 	[BYOND_VERSION_ADJUSTED(1641)] = {0x00409614, 0x00409618, 0x00409624, 0x00409634, 0x001C002C, 0x00130B20, 0x0020BA10, 0x001C3890, 0x00050606},
+	[BYOND_VERSION_ADJUSTED(1642)] = {0x00409614, 0x00409618, 0x00409624, 0x00409634, 0x001C002C, 0x00130B20, 0x0020BAE0, 0x001C3940, 0x00050606},
 };
 
 #elif defined(UTRACY_LINUX)
-#	define BYOND_MAX_BUILD 1637
+#	define BYOND_MAX_BUILD 1642
 #	define BYOND_MIN_BUILD 1543
 #	define BYOND_VERSION_ADJUSTED(a) ((a) - BYOND_MIN_BUILD)
 
@@ -3022,6 +3053,11 @@ static int unsigned const byond_offsets[][9] = {
 	[BYOND_VERSION_ADJUSTED(1635)] = {0x006D8798, 0x006D879C, 0x006D87B0, 0x006D87EC, 0x001C002C, 0x003220E0, 0x0030EF40, 0x00306B80, 0x00050505},
 	[BYOND_VERSION_ADJUSTED(1636)] = {0x006D9198, 0x006D919C, 0x006D91B0, 0x006D91EC, 0x001C002C, 0x00322D40, 0x0030FBA0, 0x003065A0, 0x00050505},
 	[BYOND_VERSION_ADJUSTED(1637)] = {0x006DA338, 0x006DA33C, 0x006DA350, 0x006DA38C, 0x001C002C, 0x003228B0, 0x0030FEF0, 0x003068F0, 0x00050505},
+  [BYOND_VERSION_ADJUSTED(1638)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050505},
+  [BYOND_VERSION_ADJUSTED(1639)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050505},
+  [BYOND_VERSION_ADJUSTED(1640)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050505},
+  [BYOND_VERSION_ADJUSTED(1641)] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x00050505},
+	[BYOND_VERSION_ADJUSTED(1642)] = {0x006DB818, 0x006DB81C, 0x006DB830, 0x006DB86C, 0x001C002C, 0x00323000, 0x003105C0, 0x00306FC0, 0x00050505},
 };
 
 #endif
